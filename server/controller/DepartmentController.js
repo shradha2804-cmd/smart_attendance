@@ -208,3 +208,23 @@ export const deleteDepartment = async (req, res) => {
   }
 
 };
+export const getDepartmentCount = async (req, res) => {
+
+  try {
+
+    const count = await Department.countDocuments();
+
+    res.json({
+      success: true,
+      count,
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      message: err.message,
+    });
+
+  }
+
+};

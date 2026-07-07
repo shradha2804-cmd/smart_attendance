@@ -304,3 +304,48 @@ export const deleteStudent = async (req, res) => {
     }
 
 };
+export const getStudentProfile = async (req, res) => {
+  try {
+
+    const student = await Student.findOne({
+      email: req.params.email,
+    })
+      .populate("department")
+      .populate("course");
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      student,
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+
+  }
+};
+export const getStudentCount = async (req, res) => {
+  try {
+    const total = await Student.countDocuments();
+
+    res.json({
+      success: true,
+      total,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};

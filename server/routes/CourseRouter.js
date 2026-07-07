@@ -6,6 +6,7 @@ import {
   getCourseById,
   updateCourse,
   deleteCourse,
+  getCourseCount,
 } from "../controller/CourseController.js";
 
 const CourseRouter = express.Router();
@@ -28,6 +29,7 @@ CourseRouter.get("/", getCourses);
 // ===========================
 // Get Course By ID
 // ===========================
+CourseRouter.get("/count", getCourseCount);
 
 CourseRouter.get("/:id", getCourseById);
 

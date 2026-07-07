@@ -6,6 +6,7 @@ import {
   getDepartmentById,
   updateDepartment,
   deleteDepartment,
+  getDepartmentCount,
 } from "../controller/DepartmentController.js";
 
 const DepartmentRouter = express.Router();
@@ -28,6 +29,8 @@ DepartmentRouter.get("/", getDepartments);
 // =======================
 // Get Department By Id
 // =======================
+DepartmentRouter.get("/count", getDepartmentCount);
+
 
 DepartmentRouter.get("/:id", getDepartmentById);
 
@@ -44,6 +47,5 @@ DepartmentRouter.put("/:id", updateDepartment);
 // =======================
 
 DepartmentRouter.delete("/:id", deleteDepartment);
-
 
 export default DepartmentRouter;

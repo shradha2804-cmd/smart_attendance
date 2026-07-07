@@ -232,3 +232,55 @@ export const deleteTeacher = async (req, res) => {
     }
 
 };
+export const getTeacherProfile = async (req, res) => {
+
+    try {
+
+        const teacher = await Teacher
+            .findOne({ email: req.params.email })
+            .populate("department");
+
+        if (!teacher) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Teacher Not Found"
+            });
+
+        }
+
+        res.status(200).json({
+            success: true,
+            teacher
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+
+    }
+
+};
+export const getTeacherCount = async (req, res) => {
+
+  try {
+
+    const count = await Teacher.countDocuments();
+
+    res.json({
+      success: true,
+      count,
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      message: err.message,
+    });
+
+  }
+
+};

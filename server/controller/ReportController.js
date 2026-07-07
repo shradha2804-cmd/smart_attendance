@@ -21,17 +21,17 @@ export const getAttendanceReport = async (req, res) => {
     }
 
     if (date) {
-      const start = new Date(date);
-      start.setHours(0, 0, 0, 0);
+  const start = new Date(date);
+  start.setHours(0, 0, 0, 0);
 
-      const end = new Date(date);
-      end.setHours(23, 59, 59, 999);
+  const end = new Date(date);
+  end.setHours(23, 59, 59, 999);
 
-      filter.date = {
-        $gte: start,
-        $lte: end,
-      };
-    }
+  filter.attendanceDate = {
+    $gte: start,
+    $lte: end,
+  };
+}
 
     const attendance = await Attendance.find(filter)
       .populate("student")
@@ -81,8 +81,8 @@ export const exportPDF = async (req, res) => {
 
     attendance.forEach((item, index) => {
       doc.fontSize(12).text(
-        `${index + 1}. ${item.student?.name} | ${item.course?.courseName} | ${item.status} | ${new Date(item.date).toLocaleDateString()}`
-      );
+  `${index + 1}. ${item.student?.name} | ${item.course?.courseName} | ${item.status} | ${new Date(item.attendanceDate).toLocaleDateString()}`
+);
     });
 
     doc.end();
@@ -126,8 +126,7 @@ export const exportExcel = async (req, res) => {
         department: item.department?.departmentName,
         course: item.course?.courseName,
         lecture: item.lectureName,
-        date: new Date(item.date).toLocaleDateString(),
-        status: item.status,
+date: new Date(item.attendanceDate).toLocaleDateString(),        status: item.status,
       });
     });
 

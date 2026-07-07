@@ -6,7 +6,9 @@ import {
     getTeachers,
     getTeacherById,
     updateTeacher,
-    deleteTeacher
+    deleteTeacher,
+    getTeacherProfile,
+    getTeacherCount
 
 } from "../controller/TeacherController.js";
 
@@ -23,8 +25,10 @@ TeacherRouter.post("/", addTeacher);
 
 TeacherRouter.get("/", getTeachers);
 
+TeacherRouter.get("/profile/:email", getTeacherProfile);
 
 // Get Teacher By Id
+TeacherRouter.get("/count", getTeacherCount);
 
 TeacherRouter.get("/:id", getTeacherById);
 
@@ -37,6 +41,5 @@ TeacherRouter.put("/:id", updateTeacher);
 // Delete Teacher
 
 TeacherRouter.delete("/:id", deleteTeacher);
-
 
 export default TeacherRouter;

@@ -28,7 +28,7 @@ export const generateQR = async (req, res) => {
 
         // Expire after 30 sec
 
-        const endTime = new Date(Date.now() + 30000);
+        const endTime = new Date(Date.now() +3*60*1000);
 
         // Generate QR Image
 
@@ -298,5 +298,25 @@ export const deleteQR = async (req, res) => {
         });
 
     }
+
+};
+export const getQRCount = async (req, res) => {
+
+  try {
+
+    const count = await QRSession.countDocuments();
+
+    res.json({
+      success: true,
+      count,
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      message: err.message,
+    });
+
+  }
 
 };

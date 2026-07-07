@@ -214,3 +214,23 @@ export const deleteCourse = async (req, res) => {
   }
 
 };
+export const getCourseCount = async (req, res) => {
+
+  try {
+
+    const count = await Course.countDocuments();
+
+    res.json({
+      success: true,
+      count,
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      message: err.message,
+    });
+
+  }
+
+};

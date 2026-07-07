@@ -2,7 +2,8 @@ import Attendance from "../models/Attendance.js";
 import QRSession from "../models/QRSession.js";
 import Student from "../models/Student.js";
 
-
+import Teacher from "../models/Teacher.js";
+import Course from "../models/Course.js";
 
 // ===================================
 // Mark Attendance
@@ -167,45 +168,36 @@ if (!student) {
 // ===================================
 
 export const getAttendance = async (req, res) => {
+  try {
 
-    try {
+    const attendance = await Attendance.find()
+      .populate({
+        path: "student",
+        select: "name rollNo"
+      })
+      .populate({
+        path: "teacher",
+        select: "name"
+      })
+      .populate({
+        path: "course",
+        select: "courseName"
+      })
+      .sort({ createdAt: -1 });
 
-        const attendance = await Attendance.find()
+    res.status(200).json({
+      success: true,
+      attendance
+    });
 
-            .populate("student")
+  } catch (error) {
 
-            .populate("teacher")
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
 
-            .populate("course")
-
-            .populate("department");
-
-
-
-        res.status(200).json({
-
-            success: true,
-
-            total: attendance.length,
-
-            attendance
-
-        });
-
-    }
-
-    catch (error) {
-
-        res.status(500).json({
-
-            success: false,
-
-            message: error.message
-
-        });
-
-    }
-
+  }
 };
 
 
@@ -214,46 +206,44 @@ export const getAttendance = async (req, res) => {
 // Student Attendance
 // ===================================
 
-export const getStudentAttendance = async (req, res) => {
 
-    try {
+        export const getStudentAttendance = async (req, res) => {
+  try {
 
-        const attendance = await Attendance.find({
+    // Find student using email
+    const student = await Student.findOne({
+      email: req.params.email,
+    });
 
-            student: req.params.id
-
-        })
-
-            .populate("course")
-
-            .populate("teacher");
-
-
-
-        res.status(200).json({
-
-            success: true,
-
-            attendance
-
-        });
-
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student Not Found",
+      });
     }
 
-    catch (error) {
+    // Find attendance using Student ObjectId
+    const attendance = await Attendance.find({
+      student: student._id,
+    })
+      .populate("course")
+      .populate("teacher")
+      .sort({ createdAt: -1 });
 
-        res.status(500).json({
+    res.status(200).json({
+      success: true,
+      attendance,
+    });
 
-            success: false,
+  } catch (error) {
 
-            message: error.message
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-        });
-
-    }
-
+  }
 };
-
 
 
 // ===================================
@@ -283,6 +273,153 @@ export const deleteAttendance = async (req, res) => {
             success: false,
 
             message: error.message
+
+        });
+
+    }
+
+};
+export const getStudentDashboard = async (req, res) => {
+
+    try {
+
+        const student = await Student.findOne({
+            email: req.params.email
+        }).populate("course");
+
+        if (!student) {
+            return res.status(404).json({
+                success: false,
+                message: "Student not found"
+            });
+        }
+
+        const attendance = await Attendance.find({
+            student: student._id
+        })
+            .populate("course")
+            .sort({ createdAt: -1 });
+
+        const present = attendance.filter(
+            a => a.status === "Present"
+        ).length;
+
+        const percentage =
+            attendance.length === 0
+                ? 0
+                : Math.round((present / attendance.length) * 100);
+
+        const today = new Date().toDateString();
+
+        const todayAttendance = attendance.find(
+            a =>
+                new Date(a.createdAt).toDateString() === today
+        );
+
+        res.json({
+
+            success: true,
+
+            student: student.name,
+
+            attendancePercentage: percentage,
+
+            todayStatus: todayAttendance
+                ? todayAttendance.status
+                : "Not Marked",
+
+            totalSubjects: 1,
+
+            recentAttendance: attendance.slice(0, 5)
+
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+
+    }
+
+};
+export const getTeacherDashboard = async (req, res) => {
+
+    try {
+
+        const teacher = await Teacher.findOne({
+            email: req.params.email
+        });
+
+        if (!teacher) {
+            return res.status(404).json({
+                success: false,
+                message: "Teacher Not Found"
+            });
+        }
+
+        const totalStudents = await Student.countDocuments();
+
+        const totalClasses = await Course.countDocuments({
+            teacher: teacher._id
+        });
+
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate()+1);
+
+        const todayAttendance = await Attendance.find({
+
+            teacher: teacher._id,
+
+            createdAt: {
+                $gte: today,
+                $lt: tomorrow
+            }
+
+        })
+        .populate("student")
+        .populate("course")
+        .sort({createdAt:-1});
+
+        const activeQR = await QRSession.findOne({
+
+            teacher: teacher._id,
+
+            status:"Active"
+
+        });
+
+        res.json({
+
+            success:true,
+
+            teacherName:teacher.name,
+
+            totalStudents,
+
+            totalClasses,
+
+            todayAttendance:todayAttendance.length,
+
+            qrStatus:activeQR ? "Active":"Inactive",
+
+            recentAttendance:todayAttendance.slice(0,5)
+
+        });
+
+    }
+
+    catch(err){
+
+        res.status(500).json({
+
+            success:false,
+
+            message:err.message
 
         });
 

@@ -5,7 +5,9 @@ import {
     markAttendance,
     getAttendance,
     getStudentAttendance,
-    deleteAttendance
+    deleteAttendance,
+    getStudentDashboard,
+    getTeacherDashboard
 
 } from "../controller/AttendanceController.js";
 
@@ -27,7 +29,7 @@ AttendanceRouter.get("/", getAttendance);
 
 // Student Attendance
 
-AttendanceRouter.get("/student/:id", getStudentAttendance);
+AttendanceRouter.get("/student/:email", getStudentAttendance);
 
 
 
@@ -35,4 +37,6 @@ AttendanceRouter.get("/student/:id", getStudentAttendance);
 
 AttendanceRouter.delete("/:id", deleteAttendance);
 
+AttendanceRouter.get("/dashboard/:email", getStudentDashboard);
+AttendanceRouter.get("/teacher-dashboard/:email", getTeacherDashboard);
 export default AttendanceRouter;

@@ -6,7 +6,8 @@ import {
     getAllQRSessions,
     getActiveQR,
     expireQR,
-    deleteQR
+    deleteQR,
+    getQRCount
 
 } from "../controller/QRController.js";
 
@@ -18,6 +19,7 @@ const QRRouter = express.Router();
 
 QRRouter.post("/generate", generateQR);
 
+QRRouter.get("/count", getQRCount);
 
 
 // Get All QR

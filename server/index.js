@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://your-project.vercel.app",
+      "https://smart-attendance-swart.vercel.app",
     ],
     credentials: true,
   })

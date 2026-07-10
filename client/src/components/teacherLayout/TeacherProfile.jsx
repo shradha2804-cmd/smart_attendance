@@ -21,10 +21,10 @@ const TeacherProfile = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+  loadProfile();
 
-    loadProfile();
-
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const loadProfile = async () => {
 

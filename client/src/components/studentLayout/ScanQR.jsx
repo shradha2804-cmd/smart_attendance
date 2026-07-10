@@ -13,15 +13,17 @@ const ScanQR = () => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      startScanner();
-    }, 300);
+  const timer = setTimeout(() => {
+    startScanner();
+  }, 300);
 
-    return () => {
-      stopScanner();
-      clearTimeout(timer);
-    };
-  }, []);
+  return () => {
+    stopScanner();
+    clearTimeout(timer);
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   // =======================
   // START QR SCANNER

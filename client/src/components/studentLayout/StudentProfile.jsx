@@ -29,9 +29,11 @@ const StudentProfile = () => {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
+ useEffect(() => {
+  loadProfile();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const loadProfile = async () => {
 

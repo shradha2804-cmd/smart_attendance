@@ -27,11 +27,11 @@ const TeacherDashboard = () => {
 
   const [dashboard, setDashboard] = useState(null);
 
-  useEffect(() => {
+ useEffect(() => {
+  loadDashboard();
 
-    loadDashboard();
-
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const loadDashboard = async () => {
 

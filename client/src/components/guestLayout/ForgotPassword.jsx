@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const API_BASE = "http://localhost:8000/api/users";
+const API_BASE = "https://smart-attendance-62f6.onrender.com/api/users";
 
 const ForgotPassword = () => {
   // --- Form State Variables ---

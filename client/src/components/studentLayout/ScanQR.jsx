@@ -59,7 +59,7 @@ const ScanQR = () => {
           await stopScanner();
 
           const res = await axios.post(
-  "http://localhost:8000/api/attendance/mark",
+  "https://smart-attendance-62f6.onrender.com/api/attendance/mark",
   {
     email: user?.email,
     qrToken: decodedText,

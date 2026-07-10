@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:8000/api/students";
+const API = "https://smart-attendance-62f6.onrender.com/api/students";
 
 export const getStudents = () => {
   return axios.get(API);

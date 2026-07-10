@@ -147,7 +147,7 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      const res = await axios.post("http://localhost:8000/api/users/login", formData);
+      const res = await axios.post("https://smart-attendance-62f6.onrender.com/api/users/login", formData);
       setMessage({ text: res.data.message, type: "success" });
       
       localStorage.setItem("user", JSON.stringify(res.data.user));

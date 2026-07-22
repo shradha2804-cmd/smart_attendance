@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import {
   FaTachometerAlt,
@@ -8,6 +8,7 @@ import {
   FaBuilding,
   FaClipboardList,
   FaSignOutAlt,
+  FaBars,
 } from "react-icons/fa";
 
 import {
@@ -17,10 +18,12 @@ import {
   Navbar,
   Button,
   ListGroup,
+  Offcanvas,
 } from "react-bootstrap";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const logout = () => {
     localStorage.removeItem("user");
@@ -28,125 +31,235 @@ const AdminLayout = () => {
     navigate("/login");
   };
 
+  const closeSidebar = () => setShowSidebar(false);
+
+  const menuItemStyle = ({ isActive }) => ({
+    backgroundColor: isActive ? "#0d6efd" : "#212529",
+    color: "#fff",
+    border: "none",
+    padding: "14px 18px",
+    textDecoration: "none",
+    fontWeight: isActive ? "600" : "400",
+    transition: "0.3s",
+  });
+
+  const MenuItems = () => (
+    <ListGroup variant="flush">
+
+      <ListGroup.Item
+        as={NavLink}
+        to="/admin/dashboard"
+        style={menuItemStyle}
+        onClick={closeSidebar}
+      >
+        <FaTachometerAlt className="me-2" />
+        Dashboard
+      </ListGroup.Item>
+
+      <ListGroup.Item
+        as={NavLink}
+        to="/admin/students"
+        style={menuItemStyle}
+        onClick={closeSidebar}
+      >
+        <FaUserGraduate className="me-2" />
+        Students
+      </ListGroup.Item>
+
+      <ListGroup.Item
+        as={NavLink}
+        to="/admin/teachers"
+        style={menuItemStyle}
+        onClick={closeSidebar}
+      >
+        <FaChalkboardTeacher className="me-2" />
+        Teachers
+      </ListGroup.Item>
+
+      <ListGroup.Item
+        as={NavLink}
+        to="/admin/courses"
+        style={menuItemStyle}
+        onClick={closeSidebar}
+      >
+        <FaBook className="me-2" />
+        Courses
+      </ListGroup.Item>
+
+      <ListGroup.Item
+        as={NavLink}
+        to="/admin/departments"
+        style={menuItemStyle}
+        onClick={closeSidebar}
+      >
+        <FaBuilding className="me-2" />
+        Departments
+      </ListGroup.Item>
+
+      <ListGroup.Item
+        as={NavLink}
+        to="/admin/reports"
+        style={menuItemStyle}
+        onClick={closeSidebar}
+      >
+        <FaClipboardList className="me-2" />
+        Reports
+      </ListGroup.Item>
+
+    </ListGroup>
+  );
+
   return (
-    <Container fluid className="p-0">
+    <>
+      <style>{`
+        .sidebar-item:hover{
+          background:#0d6efd !important;
+          color:#fff !important;
+          padding-left:25px !important;
+          transition:.3s;
+        }
 
-      <Row className="g-0">
+        @media(max-width:768px){
+          .navbar-brand{
+            font-size:16px !important;
+          }
 
-        {/* Sidebar */}
+          .logout-text{
+            display:none;
+          }
+        }
+      `}</style>
 
-        <Col
-          md={2}
-          className="bg-dark text-white vh-100"
-        >
+      <Container fluid className="p-0">
 
-          <div className="p-3">
+        <Row className="g-0">
 
-            <h3 className="text-center mb-4">
-              SmartAtten
-            </h3>
+          {/* Desktop Sidebar */}
 
-            <ListGroup variant="flush">
-
-              <ListGroup.Item
-                as={NavLink}
-                to="/admin/dashboard"
-                className="bg-dark text-white border-0"
-              >
-                <FaTachometerAlt className="me-2" />
-                Dashboard
-              </ListGroup.Item>
-
-              <ListGroup.Item
-                as={NavLink}
-                to="/admin/students"
-                className="bg-dark text-white border-0"
-              >
-                <FaUserGraduate className="me-2" />
-                Students
-              </ListGroup.Item>
-
-              <ListGroup.Item
-                as={NavLink}
-                to="/admin/teachers"
-                className="bg-dark text-white border-0"
-              >
-                <FaChalkboardTeacher className="me-2" />
-                Teachers
-              </ListGroup.Item>
-
-              <ListGroup.Item
-                as={NavLink}
-                to="/admin/courses"
-                className="bg-dark text-white border-0"
-              >
-                <FaBook className="me-2" />
-                Courses
-              </ListGroup.Item>
-
-              <ListGroup.Item
-                as={NavLink}
-                to="/admin/departments"
-                className="bg-dark text-white border-0"
-              >
-                <FaBuilding className="me-2" />
-                Departments
-              </ListGroup.Item>
-
-              <ListGroup.Item
-                as={NavLink}
-                to="/admin/reports"
-                className="bg-dark text-white border-0"
-              >
-                <FaClipboardList className="me-2" />
-                Reports
-              </ListGroup.Item>
-
-            </ListGroup>
-
-          </div>
-
-        </Col>
-
-        {/* Main Content */}
-
-        <Col md={10}>
-
-          {/* Navbar */}
-
-          <Navbar
-            bg="primary"
-            variant="dark"
-            className="px-4 d-flex justify-content-between align-items-center"
+          <Col
+            md={2}
+            className="bg-dark text-white d-none d-md-block"
+            style={{
+              position: "fixed",
+              height: "100vh",
+              overflowY: "auto",
+              left: 0,
+              top: 0,
+            }}
           >
 
-            <Navbar.Brand>
-              Smart Attendance System
-            </Navbar.Brand>
+            <div className="p-3">
 
-            <Button
-              variant="light"
-              onClick={logout}
+              <h3 className="text-center mb-4 fw-bold">
+                SmartAtten
+              </h3>
+
+              <MenuItems />
+
+            </div>
+
+          </Col>
+
+          {/* Mobile Sidebar */}
+
+          <Offcanvas
+            show={showSidebar}
+            onHide={closeSidebar}
+            placement="start"
+          >
+
+            <Offcanvas.Header
+              closeButton
+              style={{
+                background: "#212529",
+                color: "#fff",
+              }}
             >
-              <FaSignOutAlt className="me-2" />
-              Logout
-            </Button>
 
-          </Navbar>
+              <Offcanvas.Title>
+                SmartAtten
+              </Offcanvas.Title>
 
-          {/* Dynamic Pages */}
+            </Offcanvas.Header>
 
-          <div className="p-4">
+            <Offcanvas.Body
+              style={{
+                background: "#212529",
+                padding: 0,
+              }}
+            >
 
-            <Outlet />
+              <MenuItems />
 
-          </div>
+            </Offcanvas.Body>
 
-        </Col>
+          </Offcanvas>
 
-      </Row>
+          {/* Main Content */}
 
-    </Container>
+          <Col
+            xs={12}
+            md={{ span: 10, offset: 2 }}
+          >
+
+            {/* Navbar */}
+
+            <Navbar
+              bg="primary"
+              variant="dark"
+              className="shadow-sm px-3 py-2"
+            >
+
+              <Button
+                variant="outline-light"
+                className="d-md-none me-3"
+                onClick={() => setShowSidebar(true)}
+              >
+                <FaBars />
+              </Button>
+
+              <Navbar.Brand className="fw-bold">
+                Smart Attendance System
+              </Navbar.Brand>
+
+              <div className="ms-auto">
+
+                <Button
+                  variant="light"
+                  onClick={logout}
+                >
+                  <FaSignOutAlt />
+
+                  <span className="logout-text ms-2">
+                    Logout
+                  </span>
+
+                </Button>
+
+              </div>
+
+            </Navbar>
+
+            {/* Pages */}
+
+            <div
+              style={{
+                minHeight: "calc(100vh - 65px)",
+                background: "#f4f6f9",
+                padding: "25px",
+              }}
+            >
+
+              <Outlet />
+
+            </div>
+
+          </Col>
+
+        </Row>
+
+      </Container>
+    </>
   );
 };
 
